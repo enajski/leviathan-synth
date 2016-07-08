@@ -14,4 +14,3 @@
        (map build-index-entry)
        (apply merge-with concat)))
 
-(keys (build-index "/Users/dev/experiments/leviathan-synth/media"))
