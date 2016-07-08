@@ -12,7 +12,9 @@
 
 (def with-spaces (re-pattern " "))
 
-(defn find-match [sentence index]
+(defn find-match
+  "Finds the longest matching string agains the index"
+  [sentence index]
   (loop [words (split sentence with-spaces)]
     (if (empty? words)
       nil
@@ -32,11 +34,18 @@
       (if-let [match (find-match phrase index)]
         (recur (trim (replace-first phrase match "")) (conj output match))))))
 
-(defn speak [^String sentence]
-  (let [words (split-into-indexed sentence word-index)] 
-    (map (fn [word]
-           (if (contains? @word-index word)
-             (sh "afplay" (rand-nth (get @word-index word)))
-             (sh "say" word))
-           word) words)))
+(defn play-sample-or-synth
+  "Plays sample if available or falls back to 'say'"
+  [word index]
+  (do (if (contains? @index word)
+        (sh "afplay" (rand-nth (get @index word)))
+        (sh "say" word))
+      word))
+
+(defn speak
+  "Says the sentence using available methods"
+  [^String sentence]
+  (let [index word-index
+        words (split-into-indexed sentence index)]
+    (map (fn [word] (play-sample-or-synth word index)) words)))
 
