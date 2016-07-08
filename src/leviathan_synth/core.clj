@@ -13,7 +13,7 @@
 (def with-spaces (re-pattern " "))
 
 (defn find-match
-  "Finds the longest matching string agains the index"
+  "Finds the longest matching string against the index"
   [sentence index]
   (loop [words (split sentence with-spaces)]
     (if (empty? words)
