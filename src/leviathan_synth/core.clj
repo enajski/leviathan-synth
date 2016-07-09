@@ -6,6 +6,7 @@
 
 (def media-path (atom (or (System/getenv "MEDIAPATH")
                           "/Users/dev/experiments/leviathan-synth/media")))
+
 (def word-index (atom (media-library/build-index @media-path)))
 
 (defn show-words [] (keys @word-index))
@@ -47,5 +48,5 @@
   [^String sentence]
   (let [index word-index
         words (split-into-indexed sentence index)]
-    (map (fn [word] (play-sample-or-synth word index)) words)))
+    (map #(play-sample-or-synth % index) words)))
 
