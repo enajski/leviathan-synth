@@ -2,14 +2,15 @@
   (:require [leviathan-synth.index :as media-library]
             [clojure.java.shell :refer [sh]]
             [clojure.spec :as s]
-            [clojure.string :refer [split join trim replace-first]]))
+            [clojure.string :refer [split join trim replace-first]]
+            [dynne.sampled-sound :refer [read-sound play]]))
 
 (def media-path (atom (or (System/getenv "MEDIAPATH")
                           "/Users/dev/experiments/leviathan-synth/media")))
 
 (def word-index (atom (media-library/build-index @media-path)))
 
-(defn show-words [] (keys @word-index))
+(defn show-words [index] (keys @index))
 
 (def with-spaces (re-pattern " "))
 
@@ -35,12 +36,33 @@
       (if-let [match (find-match phrase index)]
         (recur (trim (replace-first phrase match "")) (conj output match))))))
 
+(def read-duration
+  "Reference to private read-duration function"
+  #'dynne.sampled-sound/read-duration)
+
+(defn seconds->milis
+  [seconds]
+  (* 1000 seconds))
+
+(defn play-sample
+  "Plays sample at path and blocks for its duration"
+  [path]
+  (let [sound (read-sound path)
+        duration (seconds->milis (read-duration path))]
+    (do (play sound)
+        (Thread/sleep duration))))
+
+(defn play-voice-synth
+  "Uses the OS command 'say'"
+  [word]
+  (sh "say" word))
+
 (defn play-sample-or-synth
   "Plays sample if available or falls back to 'say'"
   [word index]
   (do (if (contains? @index word)
-        (sh "afplay" (rand-nth (get @index word)))
-        (sh "say" word))
+        (play-sample (rand-nth (get @index word)))
+        (play-voice-synth word))
       word))
 
 (defn speak
@@ -50,3 +72,4 @@
         words (split-into-indexed sentence index)]
     (map #(play-sample-or-synth % index) words)))
 
+;; (speak (join with-spaces (show-words word-index)))
