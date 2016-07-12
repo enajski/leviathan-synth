@@ -3,7 +3,7 @@
             [clojure.java.shell :refer [sh]]
             [clojure.spec :as s]
             [clojure.string :refer [split join trim replace-first]]
-            [dynne.sampled-sound :refer [read-sound play]]))
+            [dynne.sampled-sound :refer [read-sound play append save]]))
 
 (def media-path (atom (or (System/getenv "MEDIAPATH")
                           "/Users/dev/experiments/leviathan-synth/media")))
@@ -57,11 +57,16 @@
   [word]
   (sh "say" word))
 
+(defn random-version
+  "Fetch a random path for an index entry"
+  [word index]
+  (rand-nth (get @index word)))
+
 (defn play-sample-or-synth
   "Plays sample if available or falls back to 'say'"
   [word index]
   (do (if (contains? @index word)
-        (play-sample (rand-nth (get @index word)))
+        (play-sample (random-version word index))
         (play-voice-synth word))
       word))
 
@@ -72,4 +77,16 @@
         words (split-into-indexed sentence index)]
     (map #(play-sample-or-synth % index) words)))
 
+(defn save-sentence-to-wav
+  "Saves a sampled sentence to a file"
+  [sentence path]
+  (let [index word-index
+        words (split-into-indexed sentence index)
+        combined-sample (->> words
+                             (map #(random-version % index))
+                             (map read-sound)
+                             (reduce append))]
+    (save combined-sample path 44100)))
+
 ;; (speak (join with-spaces (show-words word-index)))
+;; (save-sentence-to-wav (join with-spaces (show-words word-index)) "output.wav")
