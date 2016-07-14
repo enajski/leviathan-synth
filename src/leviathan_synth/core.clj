@@ -82,11 +82,12 @@
   [sentence path]
   (let [index word-index
         words (split-into-indexed sentence index)
+        samplerate 44100
         combined-sample (->> words
                              (map #(random-version % index))
                              (map read-sound)
                              (reduce append))]
-    (save combined-sample path 44100)))
+    (save combined-sample path samplerate)))
 
 ;; (speak (join with-spaces (show-words word-index)))
 ;; (save-sentence-to-wav (join with-spaces (show-words word-index)) "output.wav")
