@@ -77,6 +77,29 @@
         words (split-into-indexed sentence index)]
     (map #(play-sample-or-synth % index) words)))
 
+(defn md5
+  "Hashes the string with MD5"
+  [s]
+  (->> (-> (java.security.MessageDigest/getInstance "md5")
+           (.digest (.getBytes s "UTF-8")))
+       (map #(format "%02x" %))
+       (apply str)))
+
+(defn render-synth-to-file
+  "Renders the output to 'say' to a file"
+  [phrase]
+  (let [path (str "/tmp/" (md5 phrase) ".wav")
+        result (sh "say" "-o" path "--data-format=LEF32@44100" "--channels=2" phrase)]
+    (if (zero? (:exit result))
+      path
+      (:err result))))
+
+(defn get-sound-path
+  [index word]
+  (if (contains? @index word)
+    (random-version word index)
+    (render-synth-to-file word)))
+
 (defn save-sentence-to-wav
   "Saves a sampled sentence to a file"
   [sentence path]
@@ -84,7 +107,7 @@
         words (split-into-indexed sentence index)
         samplerate 44100
         combined-sample (->> words
-                             (map #(random-version % index))
+                             (map #(get-sound-path index %))
                              (map read-sound)
                              (reduce append))]
     (save combined-sample path samplerate)))
