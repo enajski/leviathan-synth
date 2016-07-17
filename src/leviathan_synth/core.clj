@@ -112,5 +112,13 @@
                              (reduce append))]
     (save combined-sample path samplerate)))
 
+(defn wav->mp4a
+  [path]
+  (let [output-path (str "/tmp/" (md5 path) ".mp4a")
+        result (sh "afconvert" "-f" "mp4f" "-d" "aac" path output-path)]
+    (if (zero? (:exit result))
+      output-path
+      (:err result))))
+
 ;; (speak (join with-spaces (show-words word-index)))
 ;; (save-sentence-to-wav (join with-spaces (show-words word-index)) "output.wav")
