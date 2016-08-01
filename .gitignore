@@ -11,3 +11,7 @@ pom.xml.asc
 .hg/
 *.iml
 .idea
+/media
+*.wav
+*.mp4
+*.aiff
