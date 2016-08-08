@@ -18,8 +18,8 @@
                    :cljsbuild {:builds [{:source-paths ["src" "dev"]
                                          :figwheel true
                                          :compiler {:main "leviathan-synth/client"
-                                                    :output-to "target/classes/public/app.js"
-                                                    ;; :output-dir "target/classes/public/out"
+                                                    :output-to "target/app.js"
+                                                    :output-dir "target/out"
                                                     :optimizations :none
                                                     :recompile-dependents true
                                                     :source-map true}}]}}})
