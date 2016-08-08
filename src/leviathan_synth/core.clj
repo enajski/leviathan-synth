@@ -103,6 +103,7 @@
 (defn save-sentence-to-wav
   "Saves a sampled sentence to a file"
   [sentence path]
+  (println (str "Saving sentence: " sentence " to path " path))
   (let [index word-index
         words (split-into-indexed sentence index)
         samplerate 44100
@@ -110,7 +111,8 @@
                              (map #(get-sound-path index %))
                              (map read-sound)
                              (reduce append))]
-    (save combined-sample path samplerate)))
+    (save combined-sample path samplerate)
+    path))
 
 (defn wav->mp4a
   [path]
