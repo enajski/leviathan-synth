@@ -19,7 +19,8 @@
 
 (defn display-available-words []
   (go (let [response (<! (http/get "/words"))
-            words (-> (:body response)
+            words (-> response
+                      :body
                       JSON/parse
                       .-words)
             html (str "<p>" words "</p>")]
