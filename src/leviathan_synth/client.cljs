@@ -12,7 +12,19 @@
   (.-value (by-id "words")))
 
 (defn insert-rendered-audio [endpoint payload]
-  (go (let [response (<! (http/post endpoint {:json-params payload}))]
-        (append! (by-id "results") (str "<audio src='/" (:body response) "' autoplay></audio>")))))
+  (go (let [response (<! (http/post endpoint {:json-params payload}))
+            html (str "<p>" (:text payload) "</p>"
+                      "<audio src='/" (:body response) "'  autoplay controls='controls'></audio>")]
+        (append! (by-id "results") html))))
+
+(defn display-available-words []
+  (go (let [response (<! (http/get "/words"))
+            words (-> (:body response)
+                      JSON/parse
+                      .-words)
+            html (str "<p>" words "</p>")]
+        (append! (by-id "available-words") html))))
+
+(display-available-words)
 
 (listen! (by-id "send") :click (fn [_] (insert-rendered-audio "/render" {:text (get-sentence)})))

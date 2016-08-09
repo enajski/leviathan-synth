@@ -12,6 +12,8 @@
 
 (defn show-words [index] (keys @index))
 
+(defn show-default-index-words [] (show-words word-index))
+
 (def with-spaces (re-pattern " "))
 
 (defn find-match
@@ -115,9 +117,9 @@
     path))
 
 (defn wav->mp4a
-  [path]
-  (let [output-path (str "/tmp/" (md5 path) ".mp4a")
-        result (sh "afconvert" "-f" "mp4f" "-d" "aac" path output-path)]
+  [input-file-path output-folder]
+  (let [output-path (str output-folder (md5 input-file-path) ".mp4a")
+        result (sh "afconvert" "-f" "mp4f" "-d" "aac" input-file-path output-path)]
     (if (zero? (:exit result))
       output-path
       (:err result))))
