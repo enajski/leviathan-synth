@@ -3,7 +3,8 @@
             [domina.css :refer [sel]]
             [domina.events :refer [listen!]]
             [cljs-http.client :as http]
-            [cljs.core.async :refer [<!]])
+            [cljs.core.async :refer [<!]]
+            [reagent.core :as r :refer [atom]])
   (:require-macros [cljs.core.async.macros :refer [go]]))
 
 (defn log [mess]
@@ -13,6 +14,13 @@
   (.-value (by-id "words")))
 
 (def render-index (atom 0))
+
+(defonce app-state (r/atom [:text "asd"]))
+
+(defn SamplerButton [text]
+  [:p "Hello from React"])
+
+(r/render [SamplerButton app-state] (js/document.getElementById "react"))
 
 (defn insert-rendered-audio [endpoint payload]
   (go (let [response (<! (http/post endpoint {:json-params payload}))
