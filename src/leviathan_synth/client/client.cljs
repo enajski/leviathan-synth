@@ -13,8 +13,13 @@
 (defn get-sentence []
   (.-value (by-id "words")))
 
+(defn dummy-samples [size]
+  (into []
+        (for [i (range size)]
+          {:id (inc i)})))
+
 (defonce app-state (r/atom {:available-words []
-                            :samples []}))
+                            :samples (dummy-samples 16)}))
 
 (defn AvailableWord [word]
   [:li word])
@@ -26,13 +31,14 @@
         ^{:key word} [AvailableWord word])]])
 
 (defn SamplerButton [sample]
-  [:div
+  [:div.sampler-button
    [:p (:text sample)]
-   [:audio {:id (str "audio" (:id sample))
-            :src (:source sample)
-            :controls "controls"
-            :autoPlay "autoplay"}]
-   [:p.key-tip "Press " (:id sample) " to trigger"]])
+   (when (:source sample)
+     [:audio {:id (str "audio" (:id sample))
+              :src (:source sample)
+              :controls "controls"
+              :autoPlay "autoplay"}])
+   [:p.key-tip (:id sample)]])
 
 (defn Sampler [app-state]
   [:div {:id "sampler"}
@@ -56,10 +62,11 @@
 
 (defn insert-rendered-audio [endpoint payload app-state]
   (go (let [response (<! (http/post endpoint {:json-params payload}))
-            sample {:id (inc (count (:samples @app-state)))
+            free-slot (count (filter #(:source %) (:samples @app-state)))
+            sample {:id (inc free-slot)
                     :source (:body response)
                     :text (:text payload)}]
-        (swap! app-state update-in [:samples] conj sample))))
+        (swap! app-state update-in [:samples] assoc free-slot sample))))
 
 (defn get-available-words []
   (go (let [response (<! (http/get "/words"))
