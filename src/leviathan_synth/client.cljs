@@ -15,7 +15,8 @@
 
 (def render-index (atom 0))
 
-(defonce app-state (r/atom {:available-words []}))
+(defonce app-state (r/atom {:available-words []
+                            :samples []}))
 
 (defn AvailableWord [word]
   [:li word])
@@ -29,14 +30,16 @@
 (defn SamplerButton [sample]
   [:div
    [:p (:text sample)]
-   [:audio {:id (:id sample)
+   [:audio {:id (str "audio" (:id sample))
             :src (:source sample)
             :controls "controls"
-            :autoplay "autoplay"}]
+            :autoPlay "autoplay"}]
    [:p.key-tip "Press " (:id sample) " to trigger"]])
 
-(defn Sampler []
-  [:div {:id "sampler"}])
+(defn Sampler [app-state]
+  [:div {:id "sampler"}
+   (for [sample (:samples @app-state)]
+     ^{:key (:id sample)} [SamplerButton sample])])
 
 (defn TextInput []
   [:div
@@ -48,21 +51,18 @@
 (defn MainComponent []
   [:div
    [TextInput]
-   [Sampler]
+   [Sampler app-state]
    [AvailableWords app-state]])
 
 (r/render [MainComponent] (js/document.getElementById "main"))
 
 (defn insert-rendered-audio [endpoint payload]
   (go (let [response (<! (http/post endpoint {:json-params payload}))
-            html (str "<p>" (:text payload) "</p>"
-                      "<audio id='audio" (inc @render-index) "' "
-                        "src='/" (:body response) "' "
-                        "autoplay controls='controls'>"
-                      "</audio>"
-                      "<div class='key-tip'>Press " (inc @render-index) " to trigger</div>")]
-        (swap! render-index inc)
-        (append! (by-id "sampler") html))))
+            sample {:id (inc @render-index)
+                    :source (:body response)
+                    :text (:text payload)}]
+        (swap! app-state update-in [:samples] conj sample)
+        (swap! render-index inc))))
 
 (defn get-available-words []
   (go (let [response (<! (http/get "/words"))
