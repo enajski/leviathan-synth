@@ -15,12 +15,30 @@
 
 (def render-index (atom 0))
 
-(defonce app-state (r/atom {:text "asd"}))
+(defonce available-words (r/atom []))
 
-(defn SamplerButton [app-state]
-  [:p (str "Hello from React, " (:text @app-state))])
+(defn AvailableWord [word]
+  [:li word])
 
-(r/render [SamplerButton app-state] (js/document.getElementById "react"))
+(defn AvailableWords [available-words-state]
+  [:div
+   [:h3 "Available words:"]
+   [:ul (for [word (sort @available-words-state)]
+        ^{:key word} [AvailableWord word])]])
+
+(defn TextInput []
+  [:div
+   [:input {:type "text" :id "words"}]
+   [:button {:id "send"
+             :on-click #(insert-rendered-audio "/render" {:text (get-sentence)})}
+   "Send"]])
+
+(defn MainComponent []
+  [:div
+   [TextInput]
+   [AvailableWords available-words]])
+
+(r/render [MainComponent] (js/document.getElementById "react"))
 
 (defn insert-rendered-audio [endpoint payload]
   (go (let [response (<! (http/post endpoint {:json-params payload}))
@@ -33,21 +51,19 @@
         (swap! render-index inc)
         (append! (by-id "results") html))))
 
-(defn display-available-words []
+(defn get-available-words []
   (go (let [response (<! (http/get "/words"))
             words (-> response
                       :body
                       JSON/parse
-                      .-words)
-            html (str "<p>" words "</p>")]
-        (append! (by-id "available-words") html))))
+                      .-words)]
+        (reset! available-words words))))
 
-(display-available-words)
+(get-available-words)
 
 (def ascii-numbers (range 49 57))
 (defn keycode->number [keycode] (- keycode (dec (first ascii-numbers))))
 
-(listen! (by-id "send") :click (fn [_] (insert-rendered-audio "/render" {:text (get-sentence)})))
 (listen! (sel "body") :keypress (fn [e]
                                   (let [keycode (:keyCode e)]
                                     (when (some #{keycode} ascii-numbers)
