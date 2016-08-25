@@ -1,5 +1,5 @@
 (ns leviathan-synth.client
-  (:require [domina :refer [by-id append!]]
+  (:require [domina :refer [by-id]]
             [domina.css :refer [sel]]
             [domina.events :refer [listen!]]
             [cljs-http.client :as http]
@@ -12,8 +12,6 @@
 
 (defn get-sentence []
   (.-value (by-id "words")))
-
-(def render-index (atom 0))
 
 (defonce app-state (r/atom {:available-words []
                             :samples []}))
@@ -41,28 +39,27 @@
    (for [sample (:samples @app-state)]
      ^{:key (:id sample)} [SamplerButton sample])])
 
-(defn TextInput []
+(defn TextInput [app-state]
   [:div
    [:input {:type "text" :id "words"}]
    [:button {:id "send"
-             :on-click #(insert-rendered-audio "/render" {:text (get-sentence)})}
+             :on-click #(insert-rendered-audio "/render" {:text (get-sentence)} app-state)}
    "Send"]])
 
 (defn MainComponent []
   [:div
-   [TextInput]
+   [TextInput app-state]
    [Sampler app-state]
    [AvailableWords app-state]])
 
 (r/render [MainComponent] (js/document.getElementById "main"))
 
-(defn insert-rendered-audio [endpoint payload]
+(defn insert-rendered-audio [endpoint payload app-state]
   (go (let [response (<! (http/post endpoint {:json-params payload}))
-            sample {:id (inc @render-index)
+            sample {:id (inc (count (:samples @app-state)))
                     :source (:body response)
                     :text (:text payload)}]
-        (swap! app-state update-in [:samples] conj sample)
-        (swap! render-index inc))))
+        (swap! app-state update-in [:samples] conj sample))))
 
 (defn get-available-words []
   (go (let [response (<! (http/get "/words"))
