@@ -18,7 +18,8 @@
                              [lein-figwheel "0.5.4-7"]]
                    :dependencies [[reloaded.repl "0.2.2"]]
                    :source-paths ["dev"]
-                   :cljsbuild {:builds [{:source-paths ["src" "dev"]
+                   :cljsbuild {:builds [{:id "dev"
+                                         :source-paths ["src" "dev"]
                                          :figwheel true
                                          :compiler {:main "leviathan-synth/client"
                                                     :output-to "target/app.js"
