@@ -1,4 +1,4 @@
-.sampler {
+#sampler {
     width:85%;
     margin: 0 auto;
     position: relative;
@@ -9,7 +9,8 @@
     font-family: sans-serif;
     color: rgba(255,255,255,0.9);
     margin-right: 2%;
-    display: block;
+    margin-bottom: 2%;
+    display: inline-table;
     height:140px;
     width: 140px;
     background: #333;

@@ -31,19 +31,23 @@
         ^{:key word} [AvailableWord word])]])
 
 (defn SamplerButton [sample]
-  [:div.sampler-button
+  [:td.sampler-button
    [:p (:text sample)]
    (when (:source sample)
      [:audio {:id (str "audio" (:id sample))
               :src (:source sample)
-              :controls "controls"
               :autoPlay "autoplay"}])
    [:p.key-tip (:id sample)]])
 
-(defn Sampler [app-state]
-  [:div {:id "sampler"}
-   (for [sample (:samples @app-state)]
+(defn SamplerRow [sample-row]
+  [:tr
+   (for [sample sample-row]
      ^{:key (:id sample)} [SamplerButton sample])])
+
+(defn Sampler [app-state]
+  [:table {:id "sampler"}
+   (for [sample-row (partition 4 (:samples @app-state))]
+     ^{:key (:id (first sample-row))} [SamplerRow sample-row])])
 
 (defn TextInput [app-state]
   [:div
