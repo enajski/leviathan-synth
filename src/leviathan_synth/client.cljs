@@ -51,4 +51,6 @@
 (listen! (sel "body") :keypress (fn [e]
                                   (let [keycode (:keyCode e)]
                                     (when (some #{keycode} ascii-numbers)
-                                      (.play (by-id (str "audio" (keycode->number keycode))))))))
+                                      (let [audio (by-id (str "audio" (keycode->number keycode)))]
+                                        (set! (.-currentTime audio) 0)
+                                        (.play audio))))))
