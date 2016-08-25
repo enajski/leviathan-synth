@@ -15,16 +15,28 @@
 
 (def render-index (atom 0))
 
-(defonce available-words (r/atom []))
+(defonce app-state (r/atom {:available-words []}))
 
 (defn AvailableWord [word]
   [:li word])
 
-(defn AvailableWords [available-words-state]
+(defn AvailableWords [app-state]
   [:div
    [:h3 "Available words:"]
-   [:ul (for [word (sort @available-words-state)]
+   [:ul (for [word (sort (:available-words @app-state))]
         ^{:key word} [AvailableWord word])]])
+
+(defn SamplerButton [sample]
+  [:div
+   [:p (:text sample)]
+   [:audio {:id (:id sample)
+            :src (:source sample)
+            :controls "controls"
+            :autoplay "autoplay"}]
+   [:p.key-tip "Press " (:id sample) " to trigger"]])
+
+(defn Sampler []
+  [:div {:id "sampler"}])
 
 (defn TextInput []
   [:div
@@ -36,9 +48,10 @@
 (defn MainComponent []
   [:div
    [TextInput]
-   [AvailableWords available-words]])
+   [Sampler]
+   [AvailableWords app-state]])
 
-(r/render [MainComponent] (js/document.getElementById "react"))
+(r/render [MainComponent] (js/document.getElementById "main"))
 
 (defn insert-rendered-audio [endpoint payload]
   (go (let [response (<! (http/post endpoint {:json-params payload}))
@@ -49,7 +62,7 @@
                       "</audio>"
                       "<div class='key-tip'>Press " (inc @render-index) " to trigger</div>")]
         (swap! render-index inc)
-        (append! (by-id "results") html))))
+        (append! (by-id "sampler") html))))
 
 (defn get-available-words []
   (go (let [response (<! (http/get "/words"))
@@ -57,7 +70,7 @@
                       :body
                       JSON/parse
                       .-words)]
-        (reset! available-words words))))
+        (swap! app-state assoc :available-words words))))
 
 (get-available-words)
 
