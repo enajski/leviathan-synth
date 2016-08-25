@@ -15,10 +15,10 @@
 
 (def render-index (atom 0))
 
-(defonce app-state (r/atom [:text "asd"]))
+(defonce app-state (r/atom {:text "asd"}))
 
-(defn SamplerButton [text]
-  [:p "Hello from React"])
+(defn SamplerButton [app-state]
+  [:p (str "Hello from React, " (:text @app-state))])
 
 (r/render [SamplerButton app-state] (js/document.getElementById "react"))
 
