@@ -103,6 +103,6 @@
       (js/setTimeout #(remove-class! sampler-button "active") 300))))
 
 (listen! (sel "body") :keypress (fn [e]
-                                  (let [keycode (:keyCode e)]
+                                  (let [keycode (:charCode e)]
                                     (when (some #{keycode} ascii-numbers)
                                       (trigger-audio (keycode->number keycode))))))
