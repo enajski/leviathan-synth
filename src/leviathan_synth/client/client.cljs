@@ -11,12 +11,24 @@
   (.log js/console mess))
 
 (defn get-sentence []
-  (.-value (by-id "words")))
+  (.-value (by-id "word-input")))
+
+(def keycodes [49   50  51  52
+               113 119 101 114
+               97  115 100 102
+               122 120  99 118])
+
+(def keybindings ["1" "2" "3" "4"
+                  "q" "w" "e" "r"
+                  "a" "s" "d" "f"
+                  "z" "x" "c" "v"])
+
+(def keycode->sample (zipmap keycodes keybindings))
 
 (defn dummy-samples [size]
   (into []
         (for [i (range size)]
-          {:id (inc i)})))
+          {:id (nth keybindings i)})))
 
 (defonce app-state (r/atom {:available-words []
                             :samples (dummy-samples 16)}))
@@ -53,7 +65,7 @@
 (defn TextInput [app-state]
   [:div
    [:input {:type "text"
-            :id "words"
+            :id "word-input"
             :placeholder "Enter sentence"
             :on-key-up (fn [e]
                          (let [keycode (.-keyCode e)]
@@ -89,9 +101,6 @@
 
 (get-available-words)
 
-(def ascii-numbers (range 49 57))
-(defn keycode->number [keycode] (- keycode (dec (first ascii-numbers))))
-
 (defn trigger-audio [sample-key]
   (let [audio (by-id (str "audio" sample-key))
         sampler-button (by-id (str "sample-button" sample-key))]
@@ -104,5 +113,6 @@
 
 (listen! (sel "body") :keypress (fn [e]
                                   (let [keycode (:charCode e)]
-                                    (when (some #{keycode} ascii-numbers)
-                                      (trigger-audio (keycode->number keycode))))))
+                                    (when (and (contains? keycode->sample keycode)
+                                               (not= "word-input" (.-id (:target e))))
+                                      (trigger-audio (get keycode->sample keycode))))))
