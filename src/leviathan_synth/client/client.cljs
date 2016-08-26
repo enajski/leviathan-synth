@@ -46,8 +46,9 @@
 
 (defn Sampler [app-state]
   [:table {:id "sampler"}
-   (for [sample-row (partition 4 (:samples @app-state))]
-     ^{:key (:id (first sample-row))} [SamplerRow sample-row])])
+   [:tbody
+    (for [sample-row (partition 4 (:samples @app-state))]
+      ^{:key (:id (first sample-row))} [SamplerRow sample-row])]])
 
 (defn TextInput [app-state]
   [:div
