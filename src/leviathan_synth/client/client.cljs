@@ -73,7 +73,7 @@
                              (insert-rendered-audio "/render" {:text (get-sentence)} app-state))))}]
    [:button {:id "send"
              :on-click #(insert-rendered-audio "/render" {:text (get-sentence)} app-state)}
-   "Send"]])
+   "Add sample"]])
 
 (defn MainComponent [app-state]
   [:div
