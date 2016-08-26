@@ -2,11 +2,21 @@ body {
     background: #9ba3ab;
 }
 
+#mpc {
+    display: flex;
+}
+
+#sidebar {
+    position: relative;
+    left: 2%;
+    top: 2%;
+    min-width: 225px;
+}
+
 #sampler {
-    width:85%;
+    width: 650px;
     margin: 0 auto;
     position: relative;
-    padding-left: 5%;
 }
 
 .sampler-button {

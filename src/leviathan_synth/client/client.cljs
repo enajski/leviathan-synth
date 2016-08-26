@@ -63,7 +63,7 @@
       ^{:key (:id (first sample-row))} [SamplerRow sample-row])]])
 
 (defn TextInput [app-state]
-  [:div
+  [:div#input-box
    [:input {:type "text"
             :id "word-input"
             :placeholder "Enter sentence"
@@ -75,11 +75,15 @@
              :on-click #(insert-rendered-audio "/render" {:text (get-sentence)} app-state)}
    "Add sample"]])
 
-(defn MainComponent [app-state]
-  [:div
+(defn Sidebar [app-state]
+  [:div#sidebar
    [TextInput app-state]
-   [Sampler app-state]
    [AvailableWords app-state]])
+
+(defn MainComponent [app-state]
+  [:div#mpc
+   [Sidebar app-state]
+   [Sampler app-state]])
 
 (r/render [MainComponent app-state] (js/document.getElementById "main"))
 
