@@ -52,7 +52,13 @@
 
 (defn TextInput [app-state]
   [:div
-   [:input {:type "text" :id "words"}]
+   [:input {:type "text"
+            :id "words"
+            :placeholder "Enter sentence"
+            :on-key-up (fn [e]
+                         (let [keycode (.-keyCode e)]
+                           (when (= 13 keycode)
+                             (insert-rendered-audio "/render" {:text (get-sentence)} app-state))))}]
    [:button {:id "send"
              :on-click #(insert-rendered-audio "/render" {:text (get-sentence)} app-state)}
    "Send"]])
