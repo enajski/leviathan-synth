@@ -37,8 +37,9 @@ body {
     transition: all 0.15s linear;
 }
 
-.sampler-button:hover {
-    background: #444;
+.sampler-button:hover, .sampler-button.active {
+    background: #777;
     border-top: 1px solid #444;
     border-right: 1px solid #444;
+    color: rgba(255,255,255,1.0);
 }

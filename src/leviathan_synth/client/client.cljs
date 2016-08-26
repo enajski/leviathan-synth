@@ -1,5 +1,5 @@
 (ns leviathan-synth.client
-  (:require [domina :refer [by-id]]
+  (:require [domina :refer [by-id add-class! remove-class!]]
             [domina.css :refer [sel]]
             [domina.events :refer [listen!]]
             [cljs-http.client :as http]
@@ -31,7 +31,7 @@
         ^{:key word} [AvailableWord word])]])
 
 (defn SamplerButton [sample]
-  [:td.sampler-button
+  [:td.sampler-button {:id (str "sample-button" (:id sample))}
    [:p (:text sample)]
    (when (:source sample)
      [:audio {:id (str "audio" (:id sample))
@@ -85,9 +85,17 @@
 (def ascii-numbers (range 49 57))
 (defn keycode->number [keycode] (- keycode (dec (first ascii-numbers))))
 
+(defn trigger-audio [sample-key]
+  (let [audio (by-id (str "audio" sample-key))
+        sampler-button (by-id (str "sample-button" sample-key))]
+    (when audio
+      (set! (.-currentTime audio) 0)
+      (.play audio))
+    (when sampler-button
+      (add-class! sampler-button "active")
+      (js/setTimeout #(remove-class! sampler-button "active") 300))))
+
 (listen! (sel "body") :keypress (fn [e]
                                   (let [keycode (:keyCode e)]
                                     (when (some #{keycode} ascii-numbers)
-                                      (let [audio (by-id (str "audio" (keycode->number keycode)))]
-                                        (set! (.-currentTime audio) 0)
-                                        (.play audio))))))
+                                      (trigger-audio (keycode->number keycode))))))
