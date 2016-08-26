@@ -43,7 +43,8 @@
         ^{:key word} [AvailableWord word])]])
 
 (defn SamplerButton [sample]
-  [:td.sampler-button {:id (str "sample-button" (:id sample))}
+  [:td.sampler-button {:id (str "sample-button" (:id sample))
+                       :on-click #(trigger-audio (:id sample))}
    [:p (:text sample)]
    (when (:source sample)
      [:audio {:id (str "audio" (:id sample))
