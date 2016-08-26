@@ -57,13 +57,13 @@
              :on-click #(insert-rendered-audio "/render" {:text (get-sentence)} app-state)}
    "Send"]])
 
-(defn MainComponent []
+(defn MainComponent [app-state]
   [:div
    [TextInput app-state]
    [Sampler app-state]
    [AvailableWords app-state]])
 
-(r/render [MainComponent] (js/document.getElementById "main"))
+(r/render [MainComponent app-state] (js/document.getElementById "main"))
 
 (defn insert-rendered-audio [endpoint payload app-state]
   (go (let [response (<! (http/post endpoint {:json-params payload}))
