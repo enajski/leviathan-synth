@@ -91,7 +91,7 @@
 (defn insert-rendered-audio [endpoint payload app-state]
   (go (let [response (<! (http/post endpoint {:json-params payload}))
             free-slot (count (filter #(:source %) (:samples @app-state)))
-            sample {:id (inc free-slot)
+            sample {:id (nth keybindings free-slot) 
                     :source (:body response)
                     :text (:text payload)}]
         (swap! app-state update-in [:samples] assoc free-slot sample))))
