@@ -1,9 +1,14 @@
 body {
-    background: #9ba3ab;
+    background: rgb(43, 158, 226);
+    color: rgb(45, 45, 45);
 }
 
 #mpc {
     display: flex;
+    width: 780px;
+    background: rgb(229, 225, 214);
+    padding: 10px;
+    border-radius: 20px;
 }
 
 #sidebar {
