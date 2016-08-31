@@ -18,6 +18,28 @@ body {
     min-width: 225px;
 }
 
+#input-box {
+    margin-top: 2px;
+    margin-right: 60px;
+}
+
+button#send {
+    margin-top: 20px;
+    height: 30px;
+    background: rgb(200,199,199);
+    border-radius: 4px;
+}
+
+input#word-input {
+    height: 30px;
+    width: 180px;
+    background: rgba(188,236,223,1.0);
+    border-color: rgb(45,45,45);
+    border-top-width: 20px;
+    border-width: 25px;
+    border-radius: 8px;
+}
+
 #sampler {
     width: 650px;
     margin: 0 auto;
