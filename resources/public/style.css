@@ -1,6 +1,7 @@
 body {
     background: rgb(43, 158, 226);
     color: rgb(45, 45, 45);
+    font-family: sans-serif;
 }
 
 #mpc {
@@ -9,6 +10,10 @@ body {
     background: rgb(229, 225, 214);
     padding: 10px;
     border-radius: 20px;
+}
+
+#right-pane {
+    padding-left: 60px;
 }
 
 #sidebar {

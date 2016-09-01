@@ -76,15 +76,24 @@
              :on-click #(insert-rendered-audio "/render" {:text (get-sentence)} app-state)}
    "Add sample [Enter ↵]"]])
 
-(defn Sidebar [app-state]
+(defn Greetings [app-state]
+  [:div#greeting
+   [:h1 "Welcome to leviathan-synth"]])
+
+(defn LeftPane [app-state]
   [:div#sidebar
    [TextInput app-state]
    [AvailableWords app-state]])
 
+(defn RightPane [app-state]
+  [:div#right-pane
+   [Greetings app-state]
+   [Sampler app-state]])
+
 (defn MainComponent [app-state]
   [:div#mpc
-   [Sidebar app-state]
-   [Sampler app-state]])
+   [LeftPane app-state]
+   [RightPane app-state]])
 
 (r/render [MainComponent app-state] (js/document.getElementById "main"))
 
