@@ -13,15 +13,21 @@
 (defn get-sentence []
   (.-value (by-id "word-input")))
 
-(def keycodes [49   50  51  52
-               113 119 101 114
-               97  115 100 102
-               122 120  99 118])
+(def keycodes
+  "ASCII codes of characters
+  used for keyboard bindings"
+  [49   50  51  52
+   113 119 101 114
+   97  115 100 102
+   122 120  99 118])
 
-(def keybindings ["1" "2" "3" "4"
-                  "q" "w" "e" "r"
-                  "a" "s" "d" "f"
-                  "z" "x" "c" "v"])
+(def keybindings
+  "Characters which form a 4x4 grid of keys
+  on a QWERTY keyboard"
+  ["1" "2" "3" "4"
+   "q" "w" "e" "r"
+   "a" "s" "d" "f"
+   "z" "x" "c" "v"])
 
 (def keycode->sample (zipmap keycodes keybindings))
 
