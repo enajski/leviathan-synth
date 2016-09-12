@@ -54,15 +54,18 @@
     (for [word (sort (:available-words @app-state))]
       ^{:key word} [AvailableWord word])]])
 
+(defn SamplerAudio [sample]
+  [:audio {:id (str "audio" (:id sample))
+           :src (:source sample)
+           :autoPlay "autoplay"}])
+
 (defn SamplerButton [sample]
   (let [id (:id sample)]
     [:td.sampler-button {:id (str "sample-button" id)
                          :on-click #(trigger-audio id)}
      [:p (:text sample)]
      (when (:source sample)
-       [:audio {:id (str "audio" id)
-                :src (:source sample)
-                :autoPlay "autoplay"}])
+       [SamplerAudio sample])
      [:p.key-tip (:id sample)]]))
 
 (defn SamplerRow [sample-row]
