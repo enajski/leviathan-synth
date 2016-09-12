@@ -16,6 +16,9 @@
 (defn get-sentence []
   (.-value (input-element)))
 
+(def escape-key 27)
+(def enter-key 13)
+
 (def keycodes
   "ASCII codes of characters
   used for keyboard bindings"
@@ -81,10 +84,10 @@
             :on-key-up (fn [e]
                          (let [keycode (.-keyCode e)
                                ctrl-modifier (.-ctrlKey e)]
-                           (when (and (= 13 keycode)
+                           (when (and (= enter-key keycode)
                                       ctrl-modifier)
                              (insert-rendered-audio "/render" {:text (get-sentence)} app-state))
-                           (when (= 27 keycode)
+                           (when (= escape-key keycode)
                              (.blur (input-element)))))}]
    [:button {:id "send"
              :on-click #(insert-rendered-audio "/render" {:text (get-sentence)} app-state)}
