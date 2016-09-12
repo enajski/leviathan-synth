@@ -10,8 +10,11 @@
 (defn log [mess]
   (.log js/console mess))
 
+(defn input-element []
+  (by-id "word-input"))
+
 (defn get-sentence []
-  (.-value (by-id "word-input")))
+  (.-value (input-element)))
 
 (def keycodes
   "ASCII codes of characters
@@ -80,7 +83,9 @@
                                ctrl-modifier (.-ctrlKey e)]
                            (when (and (= 13 keycode)
                                       ctrl-modifier)
-                             (insert-rendered-audio "/render" {:text (get-sentence)} app-state))))}]
+                             (insert-rendered-audio "/render" {:text (get-sentence)} app-state))
+                           (when (= 27 keycode)
+                             (.blur (input-element)))))}]
    [:button {:id "send"
              :on-click #(insert-rendered-audio "/render" {:text (get-sentence)} app-state)}
    "Add sample [Ctrl + Enter]"]])
