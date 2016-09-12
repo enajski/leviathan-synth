@@ -40,13 +40,13 @@
                             :samples (dummy-samples 16)}))
 
 (defn AvailableWord [word]
-  [:li word])
+  [:option word])
 
 (defn AvailableWords [app-state]
   [:div
-   [:h3 "Available words:"]
-   [:ul (for [word (sort (:available-words @app-state))]
-        ^{:key word} [AvailableWord word])]])
+   [:datalist {:id "availableWords"}
+    (for [word (sort (:available-words @app-state))]
+      ^{:key word} [AvailableWord word])]])
 
 (defn SamplerButton [sample]
   [:td.sampler-button {:id (str "sample-button" (:id sample))
