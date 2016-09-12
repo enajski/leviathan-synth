@@ -66,7 +66,7 @@
      [:p (:text sample)]
      (when (:source sample)
        [SamplerAudio sample])
-     [:p.key-tip (:id sample)]]))
+     [:p.key-tip id]]))
 
 (defn SamplerRow [sample-row]
   [:tr
