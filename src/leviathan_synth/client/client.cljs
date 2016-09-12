@@ -55,14 +55,15 @@
       ^{:key word} [AvailableWord word])]])
 
 (defn SamplerButton [sample]
-  [:td.sampler-button {:id (str "sample-button" (:id sample))
-                       :on-click #(trigger-audio (:id sample))}
-   [:p (:text sample)]
-   (when (:source sample)
-     [:audio {:id (str "audio" (:id sample))
-              :src (:source sample)
-              :autoPlay "autoplay"}])
-   [:p.key-tip (:id sample)]])
+  (let [id (:id sample)]
+    [:td.sampler-button {:id (str "sample-button" id)
+                         :on-click #(trigger-audio id)}
+     [:p (:text sample)]
+     (when (:source sample)
+       [:audio {:id (str "audio" id)
+                :src (:source sample)
+                :autoPlay "autoplay"}])
+     [:p.key-tip (:id sample)]]))
 
 (defn SamplerRow [sample-row]
   [:tr
