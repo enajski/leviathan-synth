@@ -76,12 +76,14 @@
             :placeholder "Enter sentence"
             :list "availableWords"
             :on-key-up (fn [e]
-                         (let [keycode (.-keyCode e)]
-                           (when (= 13 keycode)
+                         (let [keycode (.-keyCode e)
+                               ctrl-modifier (.-ctrlKey e)]
+                           (when (and (= 13 keycode)
+                                      ctrl-modifier)
                              (insert-rendered-audio "/render" {:text (get-sentence)} app-state))))}]
    [:button {:id "send"
              :on-click #(insert-rendered-audio "/render" {:text (get-sentence)} app-state)}
-   "Add sample [Enter ↵]"]])
+   "Add sample [Ctrl + Enter]"]])
 
 (defn Greetings [app-state]
   [:div#greeting
