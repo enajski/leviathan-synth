@@ -52,6 +52,7 @@ input#word-input {
 }
 
 .sampler-button {
+    overflow: hidden;
     font-family: sans-serif;
     color: rgba(255,255,255,0.9);
     margin-right: 2%;
