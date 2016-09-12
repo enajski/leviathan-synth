@@ -74,6 +74,7 @@
    [:input {:type "text"
             :id "word-input"
             :placeholder "Enter sentence"
+            :list "availableWords"
             :on-key-up (fn [e]
                          (let [keycode (.-keyCode e)]
                            (when (= 13 keycode)
