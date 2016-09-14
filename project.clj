@@ -12,7 +12,8 @@
                  [domina "1.0.3"]
                  [cljs-http "0.1.41"]
                  [org.clojure/data.json "0.2.6"]
-                 [reagent "0.6.0-SNAPSHOT"]]
+                 [reagent "0.6.0-SNAPSHOT"]
+                 [http-kit "2.2.0"]]
   :main leviathan-synth.system
   :profiles {:dev {:plugins [[lein-cljsbuild "1.1.3"]
                              [lein-figwheel "0.5.4-7"]]
