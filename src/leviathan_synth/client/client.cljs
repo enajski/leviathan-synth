@@ -42,7 +42,8 @@
         (for [i (range size)]
           {:id (nth keybindings i)})))
 
-(defonce app-state (r/atom {:available-words []
+(defonce app-state (r/atom {:available-words #{}
+                            :suggestions #{}
                             :samples (dummy-samples 16)}))
 
 (defn AvailableWord [word]
@@ -51,8 +52,10 @@
 (defn AvailableWords [app-state]
   [:div
    [:datalist {:id "availableWords"}
-    (for [word (sort (:available-words @app-state))]
-      ^{:key word} [AvailableWord word])]])
+    (let [available-words (:available-words @app-state)
+          suggestions (:suggestions @app-state)]
+      (for [word (clojure.set/union available-words suggestions)]
+        ^{:key word} [AvailableWord word]))]])
 
 (defn SamplerAudio [sample]
   [:audio {:id (str "audio" (:id sample))
@@ -132,7 +135,16 @@
                       :body
                       JSON/parse
                       .-words)]
-        (swap! app-state assoc :available-words words))))
+        (swap! app-state assoc :available-words (set words)))))
+
+(defn get-suggestions [phrase]
+  (go (let [response (<! (http/post "/suggestions" {:json-params {:text phrase}}))
+            suggestions (-> response
+                            :body
+                            JSON/parse
+                            second)]
+        (swap! app-state assoc :suggestions suggestions)
+        suggestions)))
 
 (get-available-words)
 
