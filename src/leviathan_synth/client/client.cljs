@@ -18,6 +18,7 @@
 
 (def escape-key 27)
 (def enter-key 13)
+(def space-key 32)
 
 (def keycodes
   "ASCII codes of characters
@@ -162,4 +163,6 @@
                                   (let [keycode (:charCode e)]
                                     (when (and (contains? keycode->sample keycode)
                                                (not= "word-input" (.-id (:target e))))
-                                      (trigger-audio (get keycode->sample keycode))))))
+                                      (trigger-audio (get keycode->sample keycode)))
+                                    (when (= space-key keycode)
+                                      (.focus (input-element))))))
