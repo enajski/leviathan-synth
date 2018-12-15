@@ -6,6 +6,7 @@
 (defn- start-server [handler port]
   (let [server (run-server handler {:port port})]
     (println (str "Started server on localhost:" port))
+    (println (str "Visit http://localhost:" port "/index.html in your browser."))
     server))
 
 (defn- stop-server [server]
